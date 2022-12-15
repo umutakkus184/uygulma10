@@ -1,0 +1,90 @@
+var app = new Vue({
+  el: '#product_detail',
+  data: {
+    question: false,
+    question_price : 0,
+    extra : false,
+    extra_price : 0,
+    extra_pkg : false,
+    extra_pkg_price : 0,
+    product_price : 0,
+    total_price : 0
+  },
+  methods: {
+    addQuestion(e){
+      if(e.target.checked){
+        this.question = 1;
+        this.question_price = parseFloat(e.target.value).toFixed(2);
+      } else {
+        this.question = 0;
+        this.question_price = 0;
+      }
+
+      this.total_price = parseFloat(parseFloat(this.product_price) + parseFloat(this.extra_price) + parseFloat(this.extra_pkg_price) + parseFloat(this.question_price)).toFixed(2);
+      $('#question').val(this.question);
+      $('#total_price').val(this.total_price);
+      $('#show_total').text(this.total_price);
+    },
+    addExtra(e){
+      if(e.target.checked){
+        this.extra = 1;
+        this.extra_price = parseFloat(e.target.value).toFixed(2);
+
+        if (this.extra_pkg) {
+          this.extra_price *= 1.5;
+        }
+      } else {
+        this.extra = 0;
+        this.extra_price = 0;
+      }
+
+      this.total_price = parseFloat(parseFloat(this.product_price) + parseFloat(this.extra_price) + parseFloat(this.extra_pkg_price) + parseFloat(this.question_price)).toFixed(2);
+      $('#extra').val(this.extra);
+      $('#total_price').val(this.total_price);
+      $('#show_total').text(this.total_price);
+
+    },
+    addExtraPkg(e, pricePkgStd, priceExtraStd, currency){
+      let extraWithNutrition = (this.extra == 1) ? priceExtraStd : 0;
+
+      // multi
+      multi = (e.target.checked) ? 1.5 : 1;
+
+      if(e.target.checked){
+        this.extra_pkg = 1;
+        this.extra_pkg_price = parseFloat(e.target.value).toFixed(2);
+
+        // multi
+        extraWithNutrition *= multi; // 1.5
+        this.extra_price = extraWithNutrition;
+
+        $('#shown_extra_price').text(currency + ' ' + parseFloat((priceExtraStd * multi)).toFixed(2) ) ;
+      } else {
+        this.extra_pkg = 0;
+        this.extra_pkg_price = 0;
+
+        // multi
+        //extraWithNutrition *= 1.0;
+        this.extra_price = priceExtraStd;
+
+        $('#shown_extra_price').text(currency + ' ' +  parseFloat(priceExtraStd).toFixed(2) ) ;
+      }
+      //$('#cb_extra_edu_price').val(this.extra_price);
+
+      this.total_price = parseFloat(parseFloat(this.product_price) + parseFloat(extraWithNutrition) + parseFloat(this.extra_pkg_price) + parseFloat(this.question_price)).toFixed(2);
+      $('#extra_pkg').val(this.extra_pkg);
+      $('#total_price').val(this.total_price);
+      $('#show_total').text(this.total_price);
+
+    },
+    buyNow(){
+      $('#buy-now').submit();
+    }
+  },
+  mounted(){
+    this.total_price = $('#total_price').val();
+    this.product_price = $('#product_price').val();
+  },updated(){
+
+  }
+})

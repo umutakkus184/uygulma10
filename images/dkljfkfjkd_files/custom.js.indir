@@ -1,0 +1,12 @@
+$( document ).ready(function() {
+  var gourl = $('.gourl');
+  if (gourl.length > 0) {
+    gourl.on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+  }
+});
